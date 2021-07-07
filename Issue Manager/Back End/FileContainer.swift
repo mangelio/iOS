@@ -5,6 +5,7 @@ import Promise
 
 private let manager = FileManager.default
 
+/// can be deleted at any time, used for images that are no longer immediately in use (e.g. sites that have been deselected or from other accounts)
 private let baseCacheURL = try! manager.url(
 	for: .cachesDirectory,
 	in: .userDomainMask,
@@ -12,7 +13,16 @@ private let baseCacheURL = try! manager.url(
 	create: true
 )
 
+/// for images from all sites the user has access to
 private let baseLocalURL = try! manager.url(
+	for: .applicationSupportDirectory,
+	in: .userDomainMask,
+	appropriateFor: nil,
+	create: true
+)
+
+/// to migrate data from previous installations
+private let baseLegacyLocalURL = try! manager.url(
 	for: .documentDirectory,
 	in: .userDomainMask,
 	appropriateFor: nil,
@@ -33,9 +43,12 @@ protocol FileContainer: StoredObject {
 }
 
 private extension File {
-	var subpath: String {
-		let sanitized = urlPath.replacingOccurrences(of: "/", with: "#")
-		return "files/\(Container.pathPrefix)/\(sanitized)"
+	static var subpath: String {
+		"files/\(Container.pathPrefix)"
+	}
+	
+	var localFilename: String {
+		urlPath.replacingOccurrences(of: "/", with: "#")
 	}
 }
 
@@ -52,13 +65,66 @@ enum FileDownloadProgress: Hashable {
 	case done
 }
 
+extension Issue {
+	/// Since we're changing from the documents folder to the application support folder, we should make sure to take any issue images from the former that haven't been uploaded yet with us.
+	static func moveLegacyFiles() {
+		let legacy = baseLegacyLocalURL.appendingPathComponent(File<Self>.subpath, isDirectory: true)
+		guard manager.fileExists(atPath: legacy.path) else { return }
+		try! manager.createDirectory(
+			at: baseLocalFolder.deletingLastPathComponent(),
+			withIntermediateDirectories: true
+		)
+		print("migrating legacy files from \(legacy) to \(baseLocalFolder)")
+		do {
+			try manager.moveItem(at: legacy, to: baseLocalFolder)
+		} catch {
+			error.printDetails(context: "could not migrate legacy files!")
+		}
+	}
+}
+
 extension FileContainer {
-	static func cacheURL(for file: File<Self>) -> URL {
-		baseCacheURL.appendingPathComponent(file.subpath, isDirectory: false)
+	private static var baseCacheFolder: URL {
+		baseCacheURL.appendingPathComponent(File<Self>.subpath, isDirectory: true)
+	}
+	
+	static var baseLocalFolder: URL {
+		baseLocalURL.appendingPathComponent(File<Self>.subpath, isDirectory: true)
+	}
+	
+	private static func cacheURL(for file: File<Self>) -> URL {
+		baseCacheFolder.appendingPathComponent(file.localFilename, isDirectory: false)
 	}
 	
 	static func localURL(for file: File<Self>) -> URL {
-		baseLocalURL.appendingPathComponent(file.subpath, isDirectory: false)
+		baseLocalFolder.appendingPathComponent(file.localFilename, isDirectory: false)
+	}
+	
+	/// Identifies files in the local folder that are no longer actively needed (e.g. because their construction site is no longer selected for this user), and moves them to the caches folder.
+	static func moveDisusedFiles(inUse: [Self]) {
+		let allLocalFiles: Set<String>
+		do {
+			allLocalFiles = Set(try manager.contentsOfDirectory(atPath: baseLocalFolder.path))
+		} catch {
+			error.printDetails(context: "could not establish present files in \(baseLocalFolder)")
+			return
+		}
+		
+		let necessaryFiles = inUse.compactMap(\.file?.localFilename)
+		let filesToMove = allLocalFiles.subtracting(necessaryFiles)
+		
+		// move all files that are no longer necessary to the caches folder
+		try? manager.createDirectory(at: baseCacheFolder, withIntermediateDirectories: true, attributes: nil)
+		for filename in filesToMove {
+			let localURL = baseLocalFolder.appendingPathComponent(filename, isDirectory: false)
+			let cacheURL = baseCacheFolder.appendingPathComponent(filename, isDirectory: false)
+			do {
+				try? manager.removeItem(at: cacheURL)
+				try manager.moveItem(at: localURL, to: cacheURL)
+			} catch {
+				error.printDetails(context: "could not move local file at \(localURL) to \(cacheURL)")
+			}
+		}
 	}
 	
 	static func downloadMissingFiles(
@@ -66,20 +132,27 @@ extension FileContainer {
 	) -> Future<Void> {
 		onProgress?(.undetermined)
 		
-		let futures = Repository.shared.read(
+		let containers = Repository.shared.read(
 			Self.order(Meta.Columns.lastChangeTime.desc)
+				.withoutDeleted
 				.fetchAll
 		)
-		.compactMap { $0.downloadFile() }
 		
+		moveDisusedFiles(inUse: containers)
+		
+		let futures = containers.compactMap { $0.downloadFile() }
+		
+		// this is much easier if we don't have to report progress
 		guard let onProgress = onProgress else { return futures.sequence() }
 		
 		let total = futures.count
 		var completed: Int32 = 0
 		
+		onProgress(.determined(current: 0, total: total))
+		
 		return futures
 			.map {
-				$0.map { _ in
+				$0.map {
 					OSAtomicIncrement32(&completed)
 					onProgress(.determined(current: Int(completed), total: total))
 				}
@@ -91,16 +164,29 @@ extension FileContainer {
 	/// - returns: A `Future` that resolves when the file is downloaded, or `nil` if there's nothing to do.
 	@discardableResult func downloadFile() -> Future<Void>? {
 		guard let file = file else { return nil }
-		let url = Self.cacheURL(for: file)
+		
+		// check if it already exists
+		let url = Self.localURL(for: file)
 		guard !manager.fileExists(atPath: url.path) else { return nil }
+		
+		// check if we already have it cached
+		let cached = Self.cacheURL(for: file)
+		if manager.fileExists(atPath: cached.path) {
+			do {
+				try manager.moveItem(at: cached, to: url)
+				return nil
+			} catch {
+				error.printDetails(context: "could not restore local file at \(url) from cached file at \(cached)")
+			}
+		}
 		
 		return downloadLimiter.dispatch(_downloadFile)
 	}
 		
 	private func _downloadFile() -> Future<Void> {
-		// check again in case it's changed by now
+		// check again in case it's changed by now (defensive coding, i know…)
 		guard let file = file else { return .fulfilled }
-		let url = Self.cacheURL(for: file)
+		let url = Self.localURL(for: file)
 		guard !manager.fileExists(atPath: url.path) else { return .fulfilled }
 		
 		let debugDesc = "for \(Self.pathPrefix) (id \(id))"
@@ -118,15 +204,6 @@ extension FileContainer {
 			.catch { error in
 				error.printDetails(context: "Could not download \(file) \(debugDesc)")
 			}
-	}
-	
-	func fileUploaded(to location: File<Self>) {
-		guard let file = file else { return }
-		// doesn't matter if this fails; we'll end up being safe by downloading anyway
-		try? manager.moveItem(
-			at: Self.localURL(for: file),
-			to: Self.cacheURL(for: location)
-		)
 	}
 	
 	func deleteFile() {

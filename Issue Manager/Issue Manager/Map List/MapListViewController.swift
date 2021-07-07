@@ -3,8 +3,10 @@
 import UIKit
 import Promise
 
-final class MapListViewController: RefreshingTableViewController, Reusable {
+final class MapListViewController: RefreshingTableViewController, InstantiableViewController {
 	typealias Localization = L10n.MapList
+	
+	static let storyboardName = "Map List"
 	
 	@IBOutlet private var backToSiteListButton: UIBarButtonItem!
 	
@@ -58,30 +60,30 @@ final class MapListViewController: RefreshingTableViewController, Reusable {
 		navigationItem.leftBarButtonItem = holder is ConstructionSite ? backToSiteListButton : nil
 		
 		super.viewWillAppear(animated)
-		
-		// workaround for the navigation bar being laid out incorrectly in iOS 13
-		// TODO: remove once apple fix this issue
-		navigationController?.navigationBar.setNeedsLayout()
 	}
 	
 	/// set to true when encountering a site we've been removed from during refresh to avoid multiple alerts
 	private var isAlreadyReturning = false
 	override func doRefresh() -> Future<Void> {
-		Client.shared.pullRemoteChanges(for: holder.constructionSiteID)
-			.flatMapError { error in
-				if case SyncError.siteAccessRemoved = error {
-					self.isAlreadyReturning = true
-					self.showAlert(
-						titled: Localization.RemovedFromMap.title,
-						message: Localization.RemovedFromMap.message,
-						okMessage: Localization.RemovedFromMap.dismiss,
-						okHandler: self.returnToSiteList
-					)
-					return .fulfilled
-				} else {
-					return .rejected(with: error)
-				}
+		Client.shared.pullRemoteChanges(for: holder.constructionSiteID) { progress in
+			DispatchQueue.main.async {
+				self.syncProgress = progress
 			}
+		}
+		.flatMapError { error in
+			if case SyncError.siteAccessRemoved = error {
+				self.isAlreadyReturning = true
+				self.showAlert(
+					titled: Localization.RemovedFromMap.title,
+					message: Localization.RemovedFromMap.message,
+					okMessage: Localization.RemovedFromMap.dismiss,
+					okHandler: self.returnToSiteList
+				)
+				return .fulfilled
+			} else {
+				return .rejected(with: error)
+			}
+		}
 	}
 	
 	override func refreshCompleted() {
@@ -168,13 +170,13 @@ final class MapListViewController: RefreshingTableViewController, Reusable {
 	}
 	
 	func showMapController(for holder: MapHolder) {
-		let mapController = storyboard!.instantiate(MapViewController.self)!
+		let mapController = MapViewController.instantiate()!
 		mapController.holder = holder
 		show(mapController, sender: self)
 	}
 	
 	func showListController(for holder: MapHolder) {
-		let listController = storyboard!.instantiate(MapListViewController.self)!
+		let listController = MapListViewController.instantiate()!
 		listController.holder = holder
 		show(listController, sender: self)
 	}

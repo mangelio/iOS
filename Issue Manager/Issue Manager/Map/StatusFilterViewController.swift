@@ -15,14 +15,6 @@ final class StatusFilterViewController: UITableViewController {
 	weak var delegate: StatusFilterViewControllerDelegate?
 	var selected: Set<Status>!
 	
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
-		
-		// workaround for the navigation bar being laid out incorrectly in iOS 13
-		// TODO: remove once apple fix this issue
-		navigationController?.navigationBar.setNeedsLayout()
-	}
-	
 	// MARK: - Table view data source
 	
 	override func numberOfSections(in tableView: UITableView) -> Int { 1 }

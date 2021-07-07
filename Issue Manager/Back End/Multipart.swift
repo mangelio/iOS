@@ -1,6 +1,7 @@
 // Created by Julian Dunskus
 
 import Foundation
+import ArrayBuilder
 
 /// a request that is encoded as a multipart form
 protocol MultipartEncodingRequest: Request, Encodable {

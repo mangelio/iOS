@@ -15,7 +15,7 @@ extension UIViewController {
 	
 	func showAlert(
 		titled title: String?,
-		message: String?,
+		message: String? = nil,
 		canCancel: Bool = false,
 		okMessage: String = L10n.Alert.okay,
 		okStyle: UIAlertAction.Style = .default,
@@ -28,9 +28,13 @@ extension UIViewController {
 		alert.addAction(UIAlertAction(title: okMessage, style: okStyle) { _ in
 			okHandler?()
 		})
+		presentOnTop(alert)
+	}
+	
+	func presentOnTop(_ modal: UIViewController) {
 		let topController = sequence(first: self, next: \UIViewController.presentedViewController)
 			.reduce(self) { $1 }
-		topController.present(alert, animated: true)
+		topController.present(modal, animated: true)
 	}
 	
 	func embed(_ child: UIViewController, within view: UIView) {

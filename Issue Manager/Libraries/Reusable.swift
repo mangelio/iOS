@@ -20,12 +20,6 @@ extension Reusable where Self: AnyObject {
 	}
 }
 
-extension UIStoryboard {
-	func instantiate<Controller>(_ type: Controller.Type = Controller.self) -> Controller? where Controller: Reusable, Controller: UIViewController {
-		instantiateViewController(withIdentifier: Controller.reuseID) as? Controller
-	}
-}
-
 extension UITableView {
 	func dequeue<Cell>(_ type: Cell.Type, for indexPath: IndexPath) -> Cell? where Cell: Reusable, Cell: UITableViewCell {
 		dequeueReusableCell(withIdentifier: Cell.reuseID, for: indexPath) as? Cell
@@ -35,5 +29,16 @@ extension UITableView {
 extension UICollectionView {
 	func dequeue<Cell>(_ type: Cell.Type, for indexPath: IndexPath) -> Cell? where Cell: Reusable, Cell: UICollectionViewCell {
 		dequeueReusableCell(withReuseIdentifier: Cell.reuseID, for: indexPath) as? Cell
+	}
+}
+
+protocol InstantiableViewController: Reusable where Self: UIViewController {
+	static var storyboardName: String { get }
+}
+
+extension InstantiableViewController {
+	static func instantiate() -> Self? {
+		UIStoryboard(name: storyboardName, bundle: nil)
+			.instantiateViewController(withIdentifier: reuseID) as? Self
 	}
 }

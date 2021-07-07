@@ -22,7 +22,7 @@ enum DeepLink {
 	init?(from urlString: String) {
 		guard
 			let components = URLComponents(string: urlString),
-			components.scheme == "mangelio"
+			components.scheme == "mangelio" || components.scheme == "baupen"
 		else { return nil }
 		
 		switch components.host {

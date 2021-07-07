@@ -2,7 +2,9 @@
 
 import UIKit
 
-final class MainViewController: UISplitViewController, Reusable {
+final class MainViewController: UISplitViewController, InstantiableViewController {
+	static let storyboardName = "Main"
+	
 	var site: ConstructionSite! {
 		didSet { masterNav.mapList.holder = site }
 	}
@@ -60,7 +62,7 @@ final class MasterNavigationController: UINavigationController {
 		let detailNav = mainController.detailNav!
 		
 		let mapController = topViewController as? MapViewController
-			?? storyboard!.instantiate(MapViewController.self)!
+			?? MapViewController.instantiate()!
 		
 		detailNav.pushViewController(mapController, animated: false) // auto-pops from self
 		viewControllers = viewControllers // update own controllers in case top was popped off

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="L56-qw-CXN">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Lightbox-->
+        <scene sceneID="SyO-2W-hGA">
+            <objects>
+                <viewController modalPresentationStyle="fullScreen" id="L56-qw-CXN" userLabel="Lightbox" customClass="LightboxViewController" customModule="Issue_Manager" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="noV-d0-89B">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" maximumZoomScale="4" translatesAutoresizingMaskIntoConstraints="NO" id="IMr-LA-CgM">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="bP3-F6-Phf">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="221"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="bP3-F6-Phf" secondAttribute="height" multiplier="15:8" id="fXs-0a-TGf"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <gestureRecognizers/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="bP3-F6-Phf" secondAttribute="trailing" id="6dt-gq-ZJR"/>
+                                    <constraint firstItem="bP3-F6-Phf" firstAttribute="height" relation="lessThanOrEqual" secondItem="IMr-LA-CgM" secondAttribute="height" id="ANd-so-hAv"/>
+                                    <constraint firstAttribute="bottom" secondItem="bP3-F6-Phf" secondAttribute="bottom" id="Ace-pt-7il"/>
+                                    <constraint firstItem="bP3-F6-Phf" firstAttribute="width" secondItem="IMr-LA-CgM" secondAttribute="width" priority="500" id="GpT-7r-Nan"/>
+                                    <constraint firstItem="bP3-F6-Phf" firstAttribute="height" secondItem="IMr-LA-CgM" secondAttribute="height" priority="500" id="MSe-Bh-iuV"/>
+                                    <constraint firstItem="bP3-F6-Phf" firstAttribute="width" relation="lessThanOrEqual" secondItem="IMr-LA-CgM" secondAttribute="width" id="eVW-ft-ujG"/>
+                                    <constraint firstItem="bP3-F6-Phf" firstAttribute="leading" secondItem="IMr-LA-CgM" secondAttribute="leading" id="enJ-qA-QUK"/>
+                                    <constraint firstItem="bP3-F6-Phf" firstAttribute="top" secondItem="IMr-LA-CgM" secondAttribute="top" id="xaR-gK-Dcc"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="delegate" destination="A9B-p8-McJ" id="eLG-I8-66L"/>
+                                    <outletCollection property="gestureRecognizers" destination="Iv1-dN-gqf" appends="YES" id="H4W-s5-7Ms"/>
+                                </connections>
+                            </scrollView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="RxO-O2-oIB"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstItem="IMr-LA-CgM" firstAttribute="top" secondItem="noV-d0-89B" secondAttribute="top" id="Iyl-p4-QbK"/>
+                            <constraint firstAttribute="trailing" secondItem="IMr-LA-CgM" secondAttribute="trailing" id="Ja4-0T-8VE"/>
+                            <constraint firstItem="IMr-LA-CgM" firstAttribute="leading" secondItem="noV-d0-89B" secondAttribute="leading" id="kck-Hg-QSV"/>
+                            <constraint firstAttribute="bottom" secondItem="IMr-LA-CgM" secondAttribute="bottom" id="wjz-8t-xPw"/>
+                        </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="myN-Bn-v5R" appends="YES" id="ddv-NR-Pnr"/>
+                        </connections>
+                    </view>
+                    <connections>
+                        <outlet property="aspectRatioConstraint" destination="fXs-0a-TGf" id="BcZ-ui-sgk"/>
+                        <outlet property="imageView" destination="bP3-F6-Phf" id="6Y8-wp-mbo"/>
+                        <outlet property="scrollView" destination="IMr-LA-CgM" id="EVR-Mu-YOt"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2QD-0x-dkE" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <customObject id="A9B-p8-McJ" customClass="CenteringScrollViewDelegate" customModule="Issue_Manager" customModuleProvider="target">
+                    <connections>
+                        <outlet property="viewForZooming" destination="bP3-F6-Phf" id="0cq-rD-Ucj"/>
+                    </connections>
+                </customObject>
+                <tapGestureRecognizer numberOfTapsRequired="2" id="Iv1-dN-gqf">
+                    <connections>
+                        <action selector="doubleTapped:" destination="L56-qw-CXN" id="aGN-kA-g2e"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="myN-Bn-v5R">
+                    <connections>
+                        <action selector="viewDragged:" destination="L56-qw-CXN" id="Dzj-XM-by9"/>
+                    </connections>
+                </panGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="3322" y="129"/>
+        </scene>
+    </scenes>
+    <color key="tintColor" name="Main"/>
+    <resources>
+        <namedColor name="Main">
+            <color red="0.20399999618530273" green="0.20399999618530273" blue="0.46700000762939453" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

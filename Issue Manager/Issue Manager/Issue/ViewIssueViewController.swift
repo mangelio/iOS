@@ -2,8 +2,10 @@
 
 import UIKit
 
-final class ViewIssueViewController: UITableViewController, Reusable {
+final class ViewIssueViewController: UITableViewController, InstantiableViewController {
 	typealias Localization = L10n.ViewIssue
+	
+	static let storyboardName = "View Issue"
 	
 	@IBOutlet private var iconView: TrilinearImageView!
 	@IBOutlet private var numberLabel: UILabel!
@@ -90,8 +92,7 @@ final class ViewIssueViewController: UITableViewController, Reusable {
 		clientModeLabel.text = issue.wasAddedWithClient ? Localization.IsClientMode.true : Localization.IsClientMode.false
 		
 		image = issue.image.flatMap {
-			// TODO: fall back on localURL for other views
-			UIImage(contentsOfFile: Issue.cacheURL(for: $0).path)
+			UIImage(contentsOfFile: Issue.localURL(for: $0).path)
 		}
 		noImageLabel.text = issue.image == nil
 			? Localization.ImagePlaceholder.notSet

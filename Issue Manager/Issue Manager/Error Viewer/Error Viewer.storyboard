@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="bfN-Ba-iXv">
+    <device id="retina6_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Fehlerdetails-->
+        <scene sceneID="s0d-6b-0kx">
+            <objects>
+                <viewController id="Y6W-OH-hqX" customClass="ErrorViewerViewController" customModule="Issue_Manager" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="790"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WZK-SR-Kpm">
+                                <rect key="frame" x="0.0" y="0.0" width="390" height="790"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RYz-S4-par" userLabel="Content View">
+                                        <rect key="frame" x="0.0" y="0.0" width="390" height="840.66666666666663"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="9iY-yS-irX">
+                                                <rect key="frame" x="20" y="20" width="350" height="800.66666666666663"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="300" verticalHuggingPriority="300" horizontalCompressionResistancePriority="900" verticalCompressionResistancePriority="900" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ex5-0u-BA7" userLabel="Error Description">
+                                                        <rect key="frame" x="0.0" y="0.0" width="350" height="750.66666666666663"/>
+                                                        <mutableString key="text">Einige Änderungen auf dem Gerät konnten nicht erfolgreich an die Website hochgeladen werden. Dies betrifft die folgenden Pendenzen:
+
+• #8 – neue pendenz – 3a7aa767-b274-11eb-b9d1-48df377f3c8c
+• #8 – neue pendenz – 3a7aa767-b274-11eb-b9d1-48df377f3c8c
+
+#8 – neue pendenz – 3a7aa767-b274-11eb-b9d1-48df377f3c8c:
+- Error Domain=NSCocoaErrorDomain Code=260 "ERR260.DFV" UserInfo={NSFilePath=/var/mobile/Containers/Data/Application/03507ED7-60EF-4D7E-B984-CB8F50004080/Documents/files/issue/#local#158DF002-C2DB-4E88-A1B0-0D836F6B1526.jpg, NSUnderlyingError=0x2807cc1e0 {Error Domain=NSPOSIXErrorDomain Code=2 "No such file or directory"}} #0
+  - super: NSObject
+
+#8 – neue pendenz – 3a7aa767-b274-11eb-b9d1-48df377f3c8c:
+- Error Domain=NSCocoaErrorDomain Code=260 "ERR260.DFV" UserInfo={NSFilePath=/var/mobile/Containers/Data/Application/03507ED7-60EF-4D7E-B984-CB8F50004080/Documents/files/issue/#local#158DF002-C2DB-4E88-A1B0-0D836F6B1526.jpg, NSUnderlyingError=0x2807cc1e0 {Error Domain=NSPOSIXErrorDomain Code=2 "No such file or directory"}} #0
+  - super: NSObject</mutableString>
+                                                        <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Iu9-H8-E4E">
+                                                        <rect key="frame" x="0.0" y="770.66666666666663" width="350" height="30"/>
+                                                        <subviews>
+                                                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="900" verticalHuggingPriority="900" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JYJ-af-hPy">
+                                                                <rect key="frame" x="151" y="0.0" width="48" height="30"/>
+                                                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
+                                                                <state key="normal" title="Button">
+                                                                    <color key="titleColor" systemColor="systemRedColor"/>
+                                                                </state>
+                                                                <connections>
+                                                                    <action selector="resolve" destination="Y6W-OH-hqX" eventType="touchUpInside" id="dIR-75-HAm"/>
+                                                                </connections>
+                                                            </button>
+                                                        </subviews>
+                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                        <constraints>
+                                                            <constraint firstItem="JYJ-af-hPy" firstAttribute="centerX" secondItem="Iu9-H8-E4E" secondAttribute="centerX" id="FZw-l6-ypC"/>
+                                                            <constraint firstAttribute="bottom" secondItem="JYJ-af-hPy" secondAttribute="bottom" id="KIE-bx-H1v"/>
+                                                            <constraint firstItem="JYJ-af-hPy" firstAttribute="top" secondItem="Iu9-H8-E4E" secondAttribute="top" id="MkN-fZ-IOG"/>
+                                                            <constraint firstItem="JYJ-af-hPy" firstAttribute="width" relation="lessThanOrEqual" secondItem="Iu9-H8-E4E" secondAttribute="width" id="Oza-gW-gxq"/>
+                                                        </constraints>
+                                                    </view>
+                                                </subviews>
+                                            </stackView>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="bottomMargin" secondItem="9iY-yS-irX" secondAttribute="bottom" id="CK8-2L-LCf"/>
+                                            <constraint firstAttribute="trailingMargin" secondItem="9iY-yS-irX" secondAttribute="trailing" id="bWO-9N-ccY"/>
+                                            <constraint firstItem="9iY-yS-irX" firstAttribute="top" secondItem="RYz-S4-par" secondAttribute="topMargin" id="hYs-oV-s4o"/>
+                                            <constraint firstItem="9iY-yS-irX" firstAttribute="leading" secondItem="RYz-S4-par" secondAttribute="leadingMargin" id="vjl-Y6-IGz"/>
+                                        </constraints>
+                                        <directionalEdgeInsets key="directionalLayoutMargins" top="20" leading="20" bottom="20" trailing="20"/>
+                                    </view>
+                                </subviews>
+                                <viewLayoutGuide key="safeArea" id="OV4-b7-eLv"/>
+                                <constraints>
+                                    <constraint firstItem="RYz-S4-par" firstAttribute="trailing" secondItem="OEB-k8-56t" secondAttribute="trailing" id="450-Co-iiy"/>
+                                    <constraint firstItem="RYz-S4-par" firstAttribute="leading" secondItem="OEB-k8-56t" secondAttribute="leading" id="5Y1-us-T5J"/>
+                                    <constraint firstItem="RYz-S4-par" firstAttribute="bottom" secondItem="OEB-k8-56t" secondAttribute="bottom" id="5tX-QX-lSK"/>
+                                    <constraint firstItem="RYz-S4-par" firstAttribute="top" secondItem="OEB-k8-56t" secondAttribute="top" id="YlD-ns-BzE"/>
+                                    <constraint firstItem="RYz-S4-par" firstAttribute="width" secondItem="Of4-Xf-Vjd" secondAttribute="width" id="Zob-Ym-d5A"/>
+                                </constraints>
+                                <viewLayoutGuide key="contentLayoutGuide" id="OEB-k8-56t"/>
+                                <viewLayoutGuide key="frameLayoutGuide" id="Of4-Xf-Vjd"/>
+                            </scrollView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="WZK-SR-Kpm" secondAttribute="trailing" id="2ki-dG-B3R"/>
+                            <constraint firstItem="WZK-SR-Kpm" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leading" id="8J8-kN-ZjI"/>
+                            <constraint firstAttribute="bottom" secondItem="WZK-SR-Kpm" secondAttribute="bottom" id="LOL-sm-pYe"/>
+                            <constraint firstItem="WZK-SR-Kpm" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" id="b6X-8r-vux"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Fehlerdetails" id="2AJ-Ij-jTS">
+                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="vtr-jt-OcO">
+                            <connections>
+                                <action selector="close:" destination="Y6W-OH-hqX" id="thq-5M-Lfg"/>
+                            </connections>
+                        </barButtonItem>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="string" keyPath="localizedTitle" value="error_viewer.title"/>
+                        </userDefinedRuntimeAttributes>
+                    </navigationItem>
+                    <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="errorDescriptionLabel" destination="ex5-0u-BA7" id="P3o-4q-D6h"/>
+                        <outlet property="resolveButton" destination="JYJ-af-hPy" id="sZ7-id-S08"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1067.6923076923076" y="77.488151658767762"/>
+        </scene>
+        <!--Error Viewer Navigation Controller-->
+        <scene sceneID="QfT-kE-Nt0">
+            <objects>
+                <navigationController storyboardIdentifier="ErrorViewerNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="bfN-Ba-iXv" customClass="ErrorViewerNavigationController" customModule="Issue_Manager" customModuleProvider="target" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="poH-D3-Dug">
+                        <rect key="frame" x="0.0" y="44" width="390" height="96"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Y6W-OH-hqX" kind="relationship" relationship="rootViewController" id="Kxo-UN-pIo"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ZX8-PO-enP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="138.46153846153845" y="77.488151658767762"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemRedColor">
+            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

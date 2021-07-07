@@ -5,6 +5,10 @@ import UserDefault
 
 @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
+	static var shared: AppDelegate {
+		UIApplication.shared.delegate as! Self
+	}
+	
 	var window: UIWindow?
 	
 	let reachability = Reachability() <- {
@@ -25,6 +29,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControll
 		
 		wipeIfNecessary()
 		
+		Issue.moveLegacyFiles()
+		
 		return true
 	}
 	
@@ -40,18 +46,22 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControll
 			let loginController = window!.rootViewController as! LoginViewController
 			loginController.logIn(with: loginInfo)
 		case .wipe:
-			wipeAllData()
-			
-			dismissThenPerform {
-				$0.showAlert(
-					titled: L10n.Alert.Wiped.title,
-					message: L10n.Alert.Wiped.message,
-					okMessage: L10n.Alert.Wiped.quit
-				) { exit(0) }
-			}
+			wipeAllDataThenExit()
 		}
 		
 		return true
+	}
+	
+	func wipeAllDataThenExit() {
+		wipeAllData()
+		
+		dismissThenPerform {
+			$0.showAlert(
+				titled: L10n.Alert.Wiped.title,
+				message: L10n.Alert.Wiped.message,
+				okMessage: L10n.Alert.Wiped.quit
+			) { exit(0) }
+		}
 	}
 	
 	func application(_ application: UIApplication, shouldSaveSecureApplicationState coder: NSCoder) -> Bool { true }
@@ -64,18 +74,18 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControll
 	
 	private static let wipeVersion = 2
 	@UserDefault("lastWipeVersion")
-	private var lastWipeVersion: Int?
+	private static var lastWipeVersion: Int?
 	
 	private func wipeIfNecessary() {
-		if lastWipeVersion == nil, DatabaseDataStore.databaseFileExists() {
+		if Self.lastWipeVersion == nil, DatabaseDataStore.databaseFileExists() {
 			print("setting missing last wipe version to 1 because a database was present")
-			lastWipeVersion = 1
+			Self.lastWipeVersion = 1
 		}
 		
-		if let lastWipe = lastWipeVersion, lastWipe < Self.wipeVersion {
+		if let lastWipe = Self.lastWipeVersion, lastWipe < Self.wipeVersion {
 			print("last wipe version (\(lastWipe)) is older than current wipe version (\(Self.wipeVersion)).")
 			wipeAllData()
-			lastWipeVersion = Self.wipeVersion
+			Self.lastWipeVersion = Self.wipeVersion
 			
 			dismissThenPerform {
 				$0.showAlert(

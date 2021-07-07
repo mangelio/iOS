@@ -3,8 +3,10 @@
 import UIKit
 import Promise
 
-final class SiteListViewController: RefreshingTableViewController, Reusable {
+final class SiteListViewController: RefreshingTableViewController, InstantiableViewController {
 	fileprivate typealias Localization = L10n.SiteList
+	
+	static let storyboardName = "Site List"
 	
 	@IBOutlet private var welcomeLabel: UILabel!
 	
@@ -96,7 +98,11 @@ final class SiteListViewController: RefreshingTableViewController, Reusable {
 	override func doRefresh() -> Future<Void> {
 		Client.shared.pullRemoteChanges { progress in
 			DispatchQueue.main.async {
-				self.fileDownloadProgress = progress
+				self.syncProgress = progress
+			}
+		} onIssueImageProgress: { imageProgress in
+			DispatchQueue.main.async {
+				self.fileDownloadProgress = imageProgress
 			}
 		}
 	}
@@ -121,8 +127,13 @@ final class SiteListViewController: RefreshingTableViewController, Reusable {
 	}
 	
 	func showMapList(for site: ConstructionSite, animated: Bool = true) {
-		let main = storyboard!.instantiate(MainViewController.self)!
+		let main = MainViewController.instantiate()!
 		main.site = site
+		
+		if #available(iOS 13, *) {} else { // can't negate #available
+			// iOS pre-13 is more strict about this, while on iOS 13+ it looks best as .currentContext
+			main.modalPresentationStyle = .fullScreen
+		}
 		
 		present(main, animated: animated)
 	}

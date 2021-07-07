@@ -64,7 +64,7 @@ extension Client {
 		pushChangesThen {}
 	}
 	
-	func synchronouslyPushLocalChanges() throws {
+	func synchronouslyPushLocalChanges() -> [IssuePushError] {
 		assertOnLinearQueue()
 		
 		let maxLastChangeTime = Issue.all().maxLastChangeTime()
@@ -72,7 +72,10 @@ extension Client {
 		let issuesWithPatches = Issue
 			.filter(Issue.Columns.patchIfChanged != nil)
 			.order(Issue.Status.Columns.createdAt)
-		try syncChanges(for: issuesWithPatches) { issue in
+		let patchErrors = syncChanges(
+			for: issuesWithPatches,
+			stage: .patch
+		) { issue in
 			self.syncPatch(for: issue).map {
 				Repository.shared.remove(issue) // remove non-canonical copy
 				Repository.shared.save($0 <- {
@@ -84,7 +87,12 @@ extension Client {
 			}
 		}
 		
-		try syncChanges(for: Issue.filter(Issue.Columns.didChangeImage)) { issue in
+		guard patchErrors.isEmpty else { return patchErrors }
+		
+		let imageErrors = syncChanges(
+			for: Issue.filter(Issue.Columns.didChangeImage),
+			stage: .imageUpload
+		) { issue in
 			self.syncImageChange(for: issue).map {
 				Repository.shared.save(
 					[.didChangeImage],
@@ -93,7 +101,10 @@ extension Client {
 			}
 		}
 		
-		try syncChanges(for: Issue.filter(Issue.Columns.didDelete)) { issue in
+		let deletionErrors = syncChanges(
+			for: Issue.filter(Issue.Columns.didDelete),
+			stage: .deletion
+		) { issue in
 			self.send(DeletionRequest(for: issue)).map {
 				Repository.shared.save(
 					[.didDelete],
@@ -101,6 +112,8 @@ extension Client {
 				)
 			}
 		}
+		
+		return imageErrors + deletionErrors
 	}
 	
 	private func syncPatch(for issue: Issue) -> Future<Issue> {
@@ -116,7 +129,6 @@ extension Client {
 			.map {
 				send(ImageUploadRequest(issue: issue, fileURL: Issue.localURL(for: $0))).map { path in
 					let image = File<Issue>(urlPath: path)
-					issue.fileUploaded(to: image)
 					Repository.shared.save([.image], of: issue <- { $0.image = image })
 				}
 			}
@@ -125,48 +137,92 @@ extension Client {
 	
 	private func syncChanges(
 		for query: QueryInterfaceRequest<Issue>,
+		stage: IssuePushError.Stage,
 		performing upload: @escaping (Issue) -> Future<Void>
-	) throws {
+	) -> [IssuePushError] {
 		// no concurrency to ensure correct ordering and avoid unforeseen issues
-		for issue in Repository.shared.read(query.fetchAll) {
-			try upload(issue).await()
+		Repository.shared.read(query.fetchAll).compactMap { issue in
+			do {
+				try upload(issue).await()
+				return nil
+			} catch {
+				return IssuePushError(stage: stage, cause: error, issue: issue)
+			}
 		}
 	}
+}
+
+struct IssuePushError: Error {
+	var stage: Stage
+	var cause: Error
+	var issue: Issue
+	
+	enum Stage {
+		case patch
+		case imageUpload
+		case deletion
+	}
+}
+
+enum SyncProgress {
+	case pushingLocalChanges
+	case fetchingTopLevelObjects
+	case pullingSiteData(ConstructionSite)
+	case downloadingConstructionSiteFiles(FileDownloadProgress)
+	case downloadingMapFiles(FileDownloadProgress)
 }
 
 extension Client {
 	/// ensures local changes are pushed first
 	func pullRemoteChanges(
+		onProgress: ((SyncProgress) -> Void)? = nil,
 		onIssueImageProgress: ((FileDownloadProgress) -> Void)? = nil
 	) -> Future<Void> {
-		sync(onIssueImageProgress: onIssueImageProgress) {
-			try Repository.shared.read(ConstructionSite.fetchAll)
-				.traverse(self.doPullRemoteChanges(for:))
-				.await()
+		sync(onProgress: onProgress, onIssueImageProgress: onIssueImageProgress) { onProgress in
+			let sites = Repository.shared.read(ConstructionSite.fetchAll)
+			for site in sites {
+				onProgress?(.pullingSiteData(site))
+				try self.doPullRemoteChanges(for: site).await()
+			}
 		}
 	}
 	
 	/// ensures local changes are pushed first
-	func pullRemoteChanges(for siteID: ConstructionSite.ID) -> Future<Void> {
-		sync {
+	func pullRemoteChanges(
+		for siteID: ConstructionSite.ID,
+		onProgress: ((SyncProgress) -> Void)? = nil
+	) -> Future<Void> {
+		sync(onProgress: onProgress) { onProgress in
 			guard let site = Repository.shared.read(siteID.get)
 			else { throw SyncError.siteAccessRemoved }
+			onProgress?(.pullingSiteData(site))
 			try self.doPullRemoteChanges(for: site).await()
 		}
 	}
 	
 	private static let fileDownloadQueue = DispatchQueue(label: "missing file downloads")
 	private func sync(
+		onProgress: ((SyncProgress) -> Void)? = nil,
 		onIssueImageProgress: ((FileDownloadProgress) -> Void)? = nil,
-		running block: @escaping () throws -> Void
+		running block: @escaping (((SyncProgress) -> Void)?) throws -> Void
 	) -> Future<Void> {
-		pushChangesThen {
+		onProgress?(.pushingLocalChanges)
+		return pushChangesThen {
+			onProgress?(.fetchingTopLevelObjects)
 			try self.doPullChangedTopLevelObjects().await()
-			try block()
+			try block(onProgress)
 			
 			// download important files now
-			try ConstructionSite.downloadMissingFiles().await()
-			try Map.downloadMissingFiles().await()
+			try ConstructionSite.downloadMissingFiles(
+				onProgress: onProgress.map { onProgress in
+					{ onProgress(.downloadingConstructionSiteFiles($0)) }
+				}
+			).await()
+			try Map.downloadMissingFiles(
+				onProgress: onProgress.map { onProgress in
+					{ onProgress(.downloadingMapFiles($0)) }
+				}
+			).await()
 			
 			// download issue images in the background
 			Self.fileDownloadQueue.async {

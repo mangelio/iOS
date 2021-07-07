@@ -305,6 +305,10 @@ extension Issue {
 		didDelete = true
 	}
 	
+	mutating func discardChangePatch() {
+		patchIfChanged = nil
+	}
+	
 	func saveAndSync() -> Future<Void> {
 		let shouldDeleteLocally = isDeleted && !wasUploaded
 		guard !shouldDeleteLocally else {

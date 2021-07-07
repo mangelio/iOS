@@ -59,11 +59,6 @@ final class IssueListViewController: UIViewController {
 		}
 	}
 	
-	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		// since this view controller is made to be embedded, we delegate all segues to the parent
-		parent?.prepare(for: segue, sender: sender)
-	}
-	
 	// MARK: PullableView-UIScrollView interaction 
 	// close pullable view when scrollview is dragged down while at top
 	

@@ -79,7 +79,7 @@ final class LoginViewController: UIViewController {
 	}
 	
 	func showSiteList(userInitiated: Bool = true) {
-		let siteList = storyboard!.instantiate(SiteListViewController.self)!
+		let siteList = SiteListViewController.instantiate()!
 		if !userInitiated {
 			siteList.needsRefresh = true
 		}

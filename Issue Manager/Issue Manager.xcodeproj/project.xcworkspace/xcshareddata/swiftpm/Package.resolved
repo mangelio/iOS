@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "ArrayBuilder",
+        "repositoryURL": "https://github.com/juliand665/ArrayBuilder.git",
+        "state": {
+          "branch": null,
+          "revision": "1d7b2707ba07789b1ebe2589a40407849c43420c",
+          "version": "1.0.0"
+        }
+      },
+      {
         "package": "CGeometry",
         "repositoryURL": "https://github.com/juliand665/CGeometry",
         "state": {

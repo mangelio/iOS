@@ -47,7 +47,7 @@ extension ConstructionSite: MapHolder {
 extension Map: MapHolder {
 	func recursiveChildren<R>(in request: R) -> R where R: DerivableRequest, R.RowDecoder == Map {
 		// recursive common table expression, in case you want to google that
-		return request.filter(
+		request.filter(
 			literal: """
 			\(sql: Map.databaseTableName).id IN (
 				WITH rec_maps AS (

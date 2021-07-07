@@ -76,7 +76,7 @@ final class SiteCell: UICollectionViewCell, Reusable {
 	private var imageTimer: Timer?
 	func updateImage() {
 		imageTimer?.invalidate()
-		if let imageURL = site.image.map(ConstructionSite.cacheURL) {
+		if let imageURL = site.image.map(ConstructionSite.localURL(for:)) {
 			if let image = UIImage(contentsOfFile: imageURL.path) {
 				imageView.image = image
 			} else {

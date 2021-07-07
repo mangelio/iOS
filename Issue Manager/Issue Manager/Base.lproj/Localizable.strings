@@ -18,6 +18,11 @@
 "alert.invalid_session.message" = "Bitte neu einloggen.";
 // CONTEXT: Titel für den Alert, dass der Token, der bei der Anmeldung erhalten wurde, nicht mehr gültig ist, z.B. wenn auf der Website das Passwort geändert wurde.
 "alert.invalid_session.title" = "Ungültige Sitzung!";
+
+////////////////////////////////////////////////////////////////////////////////
+// MARK: Alert.more
+// CONTEXT: Knopf in einem Alert für mehr Informationen zu einem Fehler
+"alert.more_info" = "Mehr Informationen…";
 // CONTEXT: "OK" Knopf in einem Alert
 "alert.okay" = "OK";
 
@@ -29,9 +34,16 @@
 "alert.outdated_client.title" = "Update erforderlich";
 
 ////////////////////////////////////////////////////////////////////////////////
+// MARK: Alert.push
+// CONTEXT: Nachricht für den Alert zu einem Fehler, dass das Hochladen lokaler Änderungen fehlgeschlagen ist. %s wird durch eine benutzerfreundliche Liste der betroffenen Pendenzen ersetzt.
+"alert.push_failed.message" = "Einige Änderungen auf dem Gerät konnten nicht erfolgreich an die Website hochgeladen werden. Dies betrifft die folgenden Pendenzen:\n\n%@";
+// CONTEXT: Titel für den Alert zu einem Fehler, dass das Hochladen lokaler Änderungen fehlgeschlagen ist.
+"alert.push_failed.title" = "Fehler beim Hochladen!";
+
+////////////////////////////////////////////////////////////////////////////////
 // MARK: Alert.unknown
-// CONTEXT: Nachricht für den Alert, dass beim aktualisieren ein unbekannter Fehler aufgetreten ist. %s wird durch eine (nicht benutzerfreundliche) Beschreibung des Fehlers ersetzt.
-"alert.unknown_sync_error.message" = "Beim Aktualisieren ist ein unbekannter Fehler aufgetreten. Bitte später noch einmal versuchen. \n\nFalls der Fehler bestehen bleibt, könnte der folgende Text dem Support behilflich sein:\n%@";
+// CONTEXT: Nachricht für den Alert, dass beim aktualisieren ein unbekannter Fehler aufgetreten ist.
+"alert.unknown_sync_error.message" = "Beim Aktualisieren ist ein unbekannter Fehler aufgetreten. Bitte später noch einmal versuchen.\n\nFalls der Fehler bestehen bleibt, sollte der Text unter \"Mehr Informationen…\" dem Support behilflich sein";
 // CONTEXT: Titel für den Alert, dass beim aktualisieren ein unbekannter Fehler aufgetreten ist.
 "alert.unknown_sync_error.title" = "Unbekannter Fehler!";
 
@@ -47,6 +59,37 @@
 "alert.wiped.quit" = "App schliessen";
 // CONTEXT: Titel für den Alert, dass alle lokalen Daten gelöscht wurden.
 "alert.wiped.title" = "App zurückgesetzt!";
+
+////////////////////////////////////////////////////////////////////////////////
+// MARK: Error
+// CONTEXT: Nachricht für den Alert, dass die problematischen Änderungen verworfen wurden.
+"error_viewer.push_failed.changes_discarded.message" = "Bitte nun erneut das Synchronisieren versuchen.";
+// CONTEXT: Titel für den Alert, dass die problematischen Änderungen verworfen wurden.
+"error_viewer.push_failed.changes_discarded.title" = "Änderungen verworfen!";
+// CONTEXT: Knopf, um als Lösungsversuch die problematischen Änderungen zu verwerfen.
+"error_viewer.push_failed.discard_changes" = "Diese Änderungen verwerfen";
+// CONTEXT: Text-Grundlage für einen Fehler beim Hochladen.
+"error_viewer.push_failed.message" = "Einige Änderungen auf dem Gerät konnten nicht erfolgreich an die Website hochgeladen werden. Dies betrifft die folgenden Pendenzen:\n\n%@\n\nWeitere Details:\n\n%@";
+// CONTEXT: Beschreibung für das Stadium des Hochladens, wo Pendenzdetails hochgeladen werden. Dies ist ein Sonderfall für neu erfasste Pendenzen, die noch nie hochgeladen wurden.
+"error_viewer.push_failed.stage.create" = "Neue Pendenz Hochladen";
+// CONTEXT: Beschreibung für das Stadium des Hochladens, wo Pendenzen gelöscht werden.
+"error_viewer.push_failed.stage.deletion" = "Pendenz Löschen";
+// CONTEXT: Beschreibung für das Stadium des Hochladens, wo Pendenzbilder hochgeladen werden.
+"error_viewer.push_failed.stage.image_upload" = "Bild Hochladen";
+// CONTEXT: Beschreibung für das Stadium des Hochladens, wo Pendenzdetails hochgeladen werden.
+"error_viewer.push_failed.stage.patch" = "Details Hochladen";
+// CONTEXT: Titel für die Detailansicht eines Fehlers
+"error_viewer.title" = "Fehlerdetails";
+// CONTEXT: Text-Grundlage für einen unbekannten Fehler beim Synchronisieren.
+"error_viewer.unknown_error.message" = "Beim Aktualisieren ist ein unbekannter Fehler aufgetreten. Folgende Informationen sollten dem Support beim Diagnostizieren helfen:\n\n%@";
+// CONTEXT: Knopf, um als Lösungsversuch alle lokalen Daten zu löschen.
+"error_viewer.wipe_all_data.button" = "App zurücksetzen";
+// CONTEXT: Knopf, um das Löschen abzubrechen.
+"error_viewer.wipe_all_data.cancel" = "Abbrechen";
+// CONTEXT: Knopf, um das Löschen zu bestätigen.
+"error_viewer.wipe_all_data.confirm" = "Alles Löschen";
+// CONTEXT: Warnung für den Lösungsversuch, alle lokalen Daten zu löschen.
+"error_viewer.wipe_all_data.warning" = "Es werden alle Daten gelöscht, die nicht auf der Website sind. Fortfahren?";
 // CONTEXT: Überschrift für den Handwerker.
 "issue.craftsman" = "Unternehmer";
 
@@ -142,11 +185,15 @@
 "map.issue_list.summary" = "%@ Pendenzen offen; %@ insgesamt";
 // CONTEXT: Wird statt map.issue_list.summary angezeigt, wenn ein Filter aktiv ist. das erste %s wird durch die Anzahl Pendenzen ersetzt, die dem Filter entsprechen und somit angezeigt werden; das Zweite wird weiterhin durch die Gesamtzahl ersetzt.
 "map.issue_list.summary_filtered" = "Filter aktiv: %@/%@ Pendenzen angezeigt";
+// CONTEXT: Knopf beim Fadenkreuz zum Platzieren einer neuen Pendenz, um abzubrechen.
+"map.issue_positioner.cancel" = "Abbrechen";
+// CONTEXT: Knopf beim Fadenkreuz zum Platzieren einer neuen Pendenz, um fortzufahren.
+"map.issue_positioner.continue" = "Weiter";
 
 ////////////////////////////////////////////////////////////////////////////////
 // MARK: Map.new
 // CONTEXT: Knopf, um eine neue Pendenz ohne Position zu erfassen.
-"map.new_unpositioned_issue" = "Pendenz ohne Platzierung Erfassen";
+"map.new_unpositioned_issue" = "Pendenz ohne Platzierung erfassen";
 
 ////////////////////////////////////////////////////////////////////////////////
 // MARK: Map.no
@@ -226,7 +273,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // MARK: Register.customize
-// CONTEXT: Beschriftung für den Schalter, um sich bei einer anderen Website als app.mangel.io zu registrieren.
+// CONTEXT: Beschriftung für den Schalter, um sich bei einer anderen Website als app.baupen.ch zu registrieren.
 "register.customize_website" = "Auf anderer Website registrieren";
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -260,6 +307,29 @@
 "site_list.title" = "Baustellen";
 // CONTEXT: Der Willkommenstext oben. %s wird mit dem Vornamen ersetzt.
 "site_list.welcome" = "Willkommen, %@";
+
+////////////////////////////////////////////////////////////////////////////////
+// MARK: Sync.progress.downloading
+"sync.progress.downloading_construction_site_files" = "Baustellenfotos laden: %@";
+"sync.progress.downloading_map_files" = "Grundrisse laden: %@";
+
+////////////////////////////////////////////////////////////////////////////////
+// MARK: Sync.progress.fetching
+"sync.progress.fetching_top_level_objects" = "Baustellen laden…";
+
+////////////////////////////////////////////////////////////////////////////////
+// MARK: Sync.progress.file
+"sync.progress.file_progress.determinate" = "%@/%@";
+"sync.progress.file_progress.done" = "fertig!";
+"sync.progress.file_progress.indeterminate" = "…";
+
+////////////////////////////////////////////////////////////////////////////////
+// MARK: Sync.progress.pulling
+"sync.progress.pulling_site_data" = "Pendenzen laden: %@";
+
+////////////////////////////////////////////////////////////////////////////////
+// MARK: Sync.progress.pushing
+"sync.progress.pushing_local_changes" = "Änderungen hochladen…";
 
 ////////////////////////////////////////////////////////////////////////////////
 // MARK: View

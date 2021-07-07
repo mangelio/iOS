@@ -90,14 +90,6 @@ final class MarkupViewController: UIViewController {
 		displayLink = CADisplayLink(target: self, selector: #selector(updateImage))
 	}
 	
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
-		
-		// workaround for the navigation bar being laid out incorrectly in iOS 13
-		// TODO: remove once apple fix this issue
-		navigationController?.navigationBar.setNeedsLayout()
-	}
-	
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
 		

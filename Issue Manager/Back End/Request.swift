@@ -1,6 +1,7 @@
 // Created by Julian Dunskus
 
 import Foundation
+import ArrayBuilder
 
 /// Conform to one of the more specific protocols rather than this.
 protocol Request {

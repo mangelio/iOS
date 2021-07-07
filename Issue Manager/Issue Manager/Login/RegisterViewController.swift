@@ -5,7 +5,7 @@ import UIKit
 final class RegisterViewController: UIViewController {
 	fileprivate typealias Localization = L10n.Register
 	
-	private static let defaultWebsite = "app.mangel.io"
+	private static let defaultWebsite = "app.baupen.ch"
 	
 	@IBOutlet private var windowView: UIView!
 	@IBOutlet private var formView: UIView!

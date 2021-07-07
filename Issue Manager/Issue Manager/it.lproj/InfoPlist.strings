@@ -3,6 +3,6 @@
  *******************************************************************************/
 
 // CONTEXT: Beschreibt, wie/wofür die App die Kamera braucht (wenn sie nach Erlaubnis fragt).
-"NSCameraUsageDescription" = "Con la fotocamera puoi fare foto direttamente dall'app.";
+"NSCameraUsageDescription" = "Con la fotocamera puoi fare accedere tramite codice QR e scattare foto direttamente nell'app.";
 // CONTEXT: Beschreibt, wie/wofür die App Zugriff auf die Fotobibliothek braucht (wenn sie nach Erlaubnis fragt).
 "NSPhotoLibraryUsageDescription" = "Puoi anche selezionare immagini dalla tua galleria.";

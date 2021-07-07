@@ -10,7 +10,7 @@ final class Client {
 	static let shared = Client()
 	static let dateFormatter = ISO8601DateFormatter()
 	
-	private static let baseServerURL = URL(string: "https://app.mangel.io")!
+	private static let baseServerURL = URL(string: "https://app.baupen.ch")!
 	
 	@UserDefault("client.loginInfo") var loginInfo: LoginInfo?
 	
@@ -58,7 +58,10 @@ final class Client {
 	
 	func pushChangesThen<T>(perform task: @escaping () throws -> T) -> Future<T> {
 		Future(asyncOn: linearQueue) {
-			try self.synchronouslyPushLocalChanges()
+			let errors = self.synchronouslyPushLocalChanges()
+			guard errors.isEmpty else {
+				throw RequestError.pushFailed(errors)
+			}
 			return try task()
 		}
 	}
@@ -130,6 +133,8 @@ enum RequestError: Error {
 	case communicationError(Error)
 	/// There was an error fulfilling the request.
 	case apiError(HydraError? = nil, statusCode: Int)
+	/// The client was unable to push local changes. This should succeed before any remote changes are pulled.
+	case pushFailed([IssuePushError])
 	/// The client is outdated, so we'd rather not risk further communication.
 	// TODO: reimplement outdated client logic
 }
